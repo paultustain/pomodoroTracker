@@ -24,27 +24,36 @@ The project will be written using a rust backend utilising Tauri and Sveltkit fo
 These may or may not be best for this, but for this project I won't be questioning it. 
 All sections should have some test cases run. 
 
-### v0 
+### v0
+Pure CLI timer functionality to have a pomodoro timer in Rust. 
 - Get rust working in nvim. 
 - Rust linting / code completion etc set up. 
 - Get a timer running.
-- Print timer to a GUI screen. 
-- Add buttons to pause/stop. 
+- Print timer to a CLI. 
 - Add functionality for task list 
 - Background colours Green for work, yellow short break, red for long break. 
 
 ### v1
+Add GUI frontend for desktop app.
+- Ensure CLI functionality holds on new frontend.
+- Use Tauri here to get a project running 
+- Simple html & css only 
+- 
+
+### v2
 - Store time worked on a project if a project is reopened. 
 - Tick boxes by the tasks to mark as completed. 
 - Earn coins for time focused. 
 - Store task list for a project - link in DB.
+- Add buttons to pause/stop. 
 
-### v2 
+
+### v3 
 - Visual element to the timer. 
 - Earn certain number of coins for time focussed. 
 - Visuals for collected coins
 
-### v3 
+### v4 
 - Ability to show hide all completed tasks for a project
 
 ### Potential future enhancements ideas - may or may not be added after usage. 
