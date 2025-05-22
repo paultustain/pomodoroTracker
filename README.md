@@ -27,7 +27,8 @@ All sections should have some test cases run.
 ### v0 
 - ~Get rust working in nvim.~ 
 - ~Rust linting / code completion etc set up.~
-- Create simple app in Tauri
+- ~Create simple app in Tauri~
+- Build a webapp using Svelte.
 - Get a timer running.
 - Print timer to a GUI screen. 
 
@@ -49,6 +50,8 @@ All sections should have some test cases run.
 
 ### v4 
 - Ability to show hide all completed tasks for a project
+- Create a tauri desktop app to go alongside. 
+
 
 ### Potential future enhancements ideas - may or may not be added after usage. 
 - Ability to fuzzy match / search projects to prevent multiple different names. 
