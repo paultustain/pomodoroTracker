@@ -20,31 +20,35 @@ Aims in this build to get over that.
 
 ## Plans 
 
-The project will be written using a rust backend utilising Tauri and Sveltkit for frontend and Postgres databasing with refinery for management.
-These may or may not be best for this, but for this project I won't be questioning it. 
-All sections should have some test cases run. 
+Project will be started in Go. Using Postgres. 
 
 ### v0 
-- ~Get rust working in nvim.~ 
-- ~Rust linting / code completion etc set up.~
-- ~Create simple app in Tauri~
-- Build a webapp using Svelte.
-- Get a timer running.
-- Print timer to a GUI screen. 
+This is going to be a pomodoro timer, ran in local host. 
+- Create project and run local host. 
+- Add a start, pause, stop button. 
+- Add a countdown. 
+- Add Work/Break notification 
+- Time resets if stopped. 
 
 ### v1
-- Add buttons to pause/stop. 
-- Add functionality for task list 
-- Background colours Green for work, yellow short break, red for long break. 
+Add todo list element and project name to timer 
+- Add to do list 
+- Add tick boxes to mark as complete 
+- Add colours to indicate work, break, long break and pause 
 
 ### v2
-- Store time worked on a project if a project is reopened. 
-- Tick boxes by the tasks to mark as completed. 
-- Earn coins for time focused. 
-- Store task list for a project - link in DB.
+Store project details in local database. 
+- Create DB using postgres 
+- Create DB functionality to get projects/details from DB 
+- Load details and show on screen
+- Overall project aims, session aims. 
 
 ### v3 
-- Visual element to the timer. 
+Make it look better. 
+- Make sure it looks clean and polished. 
+- Add user login ability 
+
+### v4 
 - Earn certain number of coins for time focussed. 
 - Visuals for collected coins
 
