@@ -1,43 +1,74 @@
 // Buttons
 const startButton = document.querySelector('#startButton')
 const stopButton = document.querySelector('#stopButton')
+const skipButton = document.querySelector('#skipButton')
+// Values 
+const stage = document.querySelector('#stage')
 
 // Outputs
 let time = document.getElementById('time')
 
+// Defaults 
 let timerId;
 let workDuration = 60 * 25;
 let shortBreak = 60 * 5;
 let longBreak = 60 * 15;
-let totalWorked = 0
+let totalWorked = 0;
+let isRunning = false;
 
 startButton.addEventListener('click', function() {
-	console.log(isPaused)
-	if (isPaused) {
-
-	} else {
-		if (!timerId){ 
-			duration = workDuration;
-			timerId = setInterval(function() {
-				time.textContent = formatTime(duration);
-				duration--;
+	if (!isRunning) {
+		stage.textContent="Work"
+		isRunning = true;
+		duration = workDuration;
+		timerId = setInterval(function() {
+			time.textContent = formatTime(duration);
+			duration--;
+			if (stage.textContent == "Work") {
 				totalWorked++;
-			}, 1000);
-		} else {
-			console.log("time id exists")
-		}
-	}
+			}
+			if (duration == 0){
+				duration = changeStage();
+			}
+		}, 1000);
+	} 
 });
 
-stopButton.addEventListener('click', function() {
+skipButton.addEventListener('click', function() {
+	duration = changeStage();
 	clearInterval(timerId);
-	isPaused=false;
-	time.textContent = "Finished"
-	console.log("You worked for " + formatTime(totalWorked) + " minutes")
-	let timerId;
+	isRunning=true;
+	timerId = setInterval(function() {
+		time.textContent = formatTime(duration);
+		duration--;
+		if (stage.textContent == "Work") {
+			totalWorked++;
+		}
+		if (duration == 0){
+			duration = changeStage();
+		}
+	}, 1000);
 })
 
 
+stopButton.addEventListener('click', function() {
+	clearInterval(timerId);
+	isRunning = false;
+	time.textContent = "25:00"
+	stage.textContent = "Stopped"
+	console.log("You worked for " + formatTime(totalWorked) + " minutes")
+	totalWorked=0;
+})
+
+function changeStage() {
+	if (stage.textContent == "Work") {
+		stage.textContent = "Break"
+		return shortBreak
+	} else {
+		stage.textContent = "Work"
+		return workDuration
+	}
+}
 function formatSeconds(value) {
 	return value < 10 ? "0" + value : value;
 }

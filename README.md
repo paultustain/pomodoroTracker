@@ -26,9 +26,9 @@ Project will be started in Go. Using Postgres.
 This is going to be a pomodoro timer, ran in local host. 
 - ~Create project and run local host.~ 
 - ~Add a start, stop button.~ 
-- Add a countdown. 
-- Add Work/Break notification 
-- Time resets if stopped. 
+- ~Add a countdown.~
+- ~Add Work/Break notification~
+- ~Time resets if stopped.~ 
 - Add skip to next phase button
 
 ### v1

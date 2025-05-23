@@ -18,6 +18,7 @@ func main() {
 		Addr:    ":" + PORT,
 	}
 	fmt.Printf("File serving on port: localhost:8080")
+
 	server.ListenAndServe()
 
 }
