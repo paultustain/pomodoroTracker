@@ -24,11 +24,12 @@ Project will be started in Go. Using Postgres.
 
 ### v0 
 This is going to be a pomodoro timer, ran in local host. 
-- Create project and run local host. 
-- Add a start, pause, stop button. 
+- ~Create project and run local host.~ 
+- ~Add a start, stop button.~ 
 - Add a countdown. 
 - Add Work/Break notification 
 - Time resets if stopped. 
+- Add skip to next phase button
 
 ### v1
 Add todo list element and project name to timer 
@@ -44,7 +45,8 @@ Store project details in local database.
 - Overall project aims, session aims. 
 
 ### v3 
-Make it look better. 
+Make it look better.
+- Add pause button
 - Make sure it looks clean and polished. 
 - Add user login ability 
 
@@ -59,4 +61,4 @@ Make it look better.
 
 ### Potential future enhancements ideas - may or may not be added after usage. 
 - Ability to fuzzy match / search projects to prevent multiple different names. 
-- Store
+- Show all projects on the front page to open up - like the tubely list all videos/ then go into videos
