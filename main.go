@@ -12,7 +12,10 @@ func main() {
 
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir(ROOTDIR))
+
 	mux.Handle("/", fs)
+	mux.HandleFunc("GET /api/healthz", handlerReadiness)
+
 	server := &http.Server{
 		Handler: mux,
 		Addr:    ":" + PORT,
@@ -20,9 +23,4 @@ func main() {
 	fmt.Printf("File serving on port: localhost:8080")
 
 	server.ListenAndServe()
-
-}
-
-func buttonPush() {
-	fmt.Println("Start Pushed")
 }

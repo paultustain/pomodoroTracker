@@ -16,11 +16,15 @@ let longBreak = 60 * 15;
 let totalWorked = 0;
 let isRunning = false;
 
+
+// FIX DELAY TO START BY 1 SECOND.
+// Initial code is delayed. 
 startButton.addEventListener('click', function() {
 	if (!isRunning) {
 		stage.textContent="Work"
 		isRunning = true;
 		duration = workDuration;
+
 		timerId = setInterval(function() {
 			time.textContent = formatTime(duration);
 			duration--;
@@ -38,6 +42,8 @@ skipButton.addEventListener('click', function() {
 	duration = changeStage();
 	clearInterval(timerId);
 	isRunning=true;
+
+	time.textContent = formatTime(duration);
 	timerId = setInterval(function() {
 		time.textContent = formatTime(duration);
 		duration--;

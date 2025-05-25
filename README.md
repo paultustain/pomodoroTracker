@@ -29,10 +29,11 @@ This is going to be a pomodoro timer, ran in local host.
 - ~Add a countdown.~
 - ~Add Work/Break notification~
 - ~Time resets if stopped.~ 
-- Add skip to next phase button
+- ~Add skip to next phase button~
 
 ### v1
 Add todo list element and project name to timer 
+- ~Ensure the time worked~
 - Add to do list 
 - Add tick boxes to mark as complete 
 - Add colours to indicate work, break, long break and pause 
