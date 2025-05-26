@@ -1,12 +1,12 @@
 -- name: CreateTask :one
 INSERT INTO tasks(id, created_at, updated_at, task, completed, project_id)
 VALUES (
-	$1, 
+	gen_random_uuid(),
 	NOW(), 
 	NOW(), 
-	$2,
-	$3, 
-	$4
+	$1,
+	$2, 
+	$3
 )
 RETURNING *;
 
