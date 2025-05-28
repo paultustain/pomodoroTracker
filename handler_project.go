@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -33,6 +34,8 @@ func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Reques
 		)
 		return
 	}
+
+	fmt.Printf("Name: %s", params.Name)
 
 	project, err := cfg.db.CreateProject(r.Context(), params.Name)
 	if err != nil {
