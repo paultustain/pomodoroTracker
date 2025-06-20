@@ -86,3 +86,27 @@ function formatTime(duration) {
 		seconds = formatSeconds(seconds);
 		return minutes + ":" + seconds;
 }
+
+document.getElementById('create-project-form').addEventListener('submit', async (event) => {
+	event.preventDefault();
+	await createProject();
+});
+
+async function createProject() {
+	const name = document.getElementById('project-name').value;
+	try {
+		const res = await fetch('api/createProject', {
+			method: 'POST', 
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({name}),
+		});
+		const data = res.json();
+		if (!res.ok) {
+			throw new Error(`Failed to create project:  ${data.error}`);
+		}
+	} catch (error) {
+		alert(`Error: ${error.message}`);
+	}
+}

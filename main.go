@@ -21,6 +21,7 @@ type apiConfig struct {
 func main() {
 
 	dbURL, err := config.GetConfigFilePath()
+	fmt.Println(dbURL)
 	if err != nil {
 		log.Fatalf("failed to get filepath: %v", err)
 	}
@@ -41,6 +42,7 @@ func main() {
 
 	mux.Handle("/", fs)
 	mux.HandleFunc("GET /api/healthz", handlerReadiness)
+
 	mux.HandleFunc("POST /api/createProject", apiCfg.handlerProjectCreate)
 
 	server := &http.Server{
