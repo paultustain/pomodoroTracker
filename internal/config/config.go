@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -8,7 +9,31 @@ import (
 
 const configFile = ".pomodoroconfig.json"
 
-func Read()
+type Config struct {
+	DBURL string `json:"db_url"`
+}
+
+func Read() (Config, error) {
+	configPath, err := GetConfigFilePath()
+	if err != nil {
+		return Config{}, err
+	}
+
+	file, err := os.Open(configPath)
+	if err != nil {
+		return Config{}, err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	cfg := Config{}
+	err = decoder.Decode(&cfg)
+
+	if err != nil {
+		return Config{}, err
+	}
+	return cfg, nil
+}
 
 // NEed to read config file path and use the values inside config.
 // Currently using the link to the path not the value

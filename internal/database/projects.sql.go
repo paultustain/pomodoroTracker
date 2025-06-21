@@ -33,3 +33,12 @@ func (q *Queries) CreateProject(ctx context.Context, name string) (Project, erro
 	)
 	return i, err
 }
+
+const deleteProjects = `-- name: DeleteProjects :exec
+DELETE FROM projects
+`
+
+func (q *Queries) DeleteProjects(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, deleteProjects)
+	return err
+}

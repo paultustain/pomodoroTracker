@@ -20,13 +20,13 @@ type apiConfig struct {
 
 func main() {
 
-	dbURL, err := config.GetConfigFilePath()
-	fmt.Println(dbURL)
+	cfg, err := config.Read()
+
 	if err != nil {
 		log.Fatalf("failed to get filepath: %v", err)
 	}
 
-	db, err := sql.Open("postgres", dbURL)
+	db, err := sql.Open("postgres", cfg.DBURL)
 	if err != nil {
 		log.Fatalf("error connecting to db: %v", err)
 	}
@@ -44,6 +44,7 @@ func main() {
 	mux.HandleFunc("GET /api/healthz", handlerReadiness)
 
 	mux.HandleFunc("POST /api/createProject", apiCfg.handlerProjectCreate)
+	mux.HandleFunc("POST /admin/reset", apiCfg.handlerReset)
 
 	server := &http.Server{
 		Handler: mux,

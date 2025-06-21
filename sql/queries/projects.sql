@@ -8,3 +8,6 @@ VALUES (
 	false
 )
 RETURNING *;
+
+-- name: DeleteProjects :exec
+DELETE FROM projects;
