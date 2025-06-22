@@ -42,3 +42,53 @@ func (q *Queries) DeleteProjects(ctx context.Context) error {
 	_, err := q.db.ExecContext(ctx, deleteProjects)
 	return err
 }
+
+const getProject = `-- name: GetProject :one
+SELECT id, created_at, updated_at, name, completed FROM projects WHERE name = $1
+`
+
+func (q *Queries) GetProject(ctx context.Context, name string) (Project, error) {
+	row := q.db.QueryRowContext(ctx, getProject, name)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Completed,
+	)
+	return i, err
+}
+
+const getProjects = `-- name: GetProjects :many
+SELECT id, created_at, updated_at, name, completed FROM projects
+`
+
+func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
+	rows, err := q.db.QueryContext(ctx, getProjects)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Project
+	for rows.Next() {
+		var i Project
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+			&i.Completed,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

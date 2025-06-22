@@ -16,7 +16,9 @@ let longBreak = 60 * 15;
 let totalWorked = 0;
 let isRunning = false;
 
-
+window.onload = function() {
+	getProjects();
+}
 // FIX DELAY TO START BY 1 SECOND.
 // Initial code is delayed. 
 startButton.addEventListener('click', function() {
@@ -105,6 +107,33 @@ async function createProject() {
 		const data = res.json();
 		if (!res.ok) {
 			throw new Error(`Failed to create project:  ${data.error}`);
+		}
+
+		await getProjects();
+	} catch (error) {
+		alert(`Error: ${error.message}`);
+	}
+}
+
+async function getProjects() {
+	try {
+		const res = await fetch('api/getProjects', {
+			method: 'GET', 
+		});
+
+		if (!res.ok) { 
+			const data = await res.json(); 
+			throw new Error(`Failed to get projects. Error: ${data.error}`)
+		}
+
+		const projects = await res.json();
+		const projectList = document.getElementById('project-list')
+		projectList.innerHTML = '';
+		for (const project of projects) {
+			const listItem = document.createElement('li');
+			console.log(`proj: ${project}`);
+			listItem.textContent = project.Name;
+			projectList.appendChild(listItem);
 		}
 	} catch (error) {
 		alert(`Error: ${error.message}`);

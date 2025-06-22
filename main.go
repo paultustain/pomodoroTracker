@@ -40,11 +40,14 @@ func main() {
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir(ROOTDIR))
 
+	// base api functions
 	mux.Handle("/", fs)
 	mux.HandleFunc("GET /api/healthz", handlerReadiness)
-
-	mux.HandleFunc("POST /api/createProject", apiCfg.handlerProjectCreate)
 	mux.HandleFunc("POST /admin/reset", apiCfg.handlerReset)
+
+	// Project functions
+	mux.HandleFunc("POST /api/createProject", apiCfg.handlerProjectCreate)
+	mux.HandleFunc("GET /api/getProjects", apiCfg.HandlerGetProjects)
 
 	server := &http.Server{
 		Handler: mux,

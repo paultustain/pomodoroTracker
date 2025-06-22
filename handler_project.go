@@ -44,7 +44,6 @@ func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Reques
 		)
 		return
 	}
-
 	respondWithJSON(
 		w, http.StatusCreated, Project{
 			ID:        project.ID,
@@ -54,5 +53,18 @@ func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Reques
 			Completed: project.Completed,
 		},
 	)
+}
 
+func (cfg *apiConfig) HandlerGetProjects(w http.ResponseWriter, r *http.Request) {
+	videos, err := cfg.db.GetProjects(r.Context())
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"failed to get videos: ",
+			err,
+		)
+	}
+
+	respondWithJSON(w, http.StatusOK, videos)
 }
