@@ -16,6 +16,7 @@ type Project struct {
 	UpdatedAt time.Time
 	Name      string
 	Completed bool
+	TimeSpent int32
 }
 
 type Task struct {

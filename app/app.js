@@ -64,7 +64,15 @@ stopButton.addEventListener('click', function() {
 	isRunning = false;
 	time.textContent = "25:00"
 	stage.textContent = "Stopped"
+
 	console.log("You worked for " + formatTime(totalWorked) + " minutes" + totalWorked)
+
+	/* Add async function here. UpdateTime in go needs to accept time as param. 
+	 * Once this is done, it can load correctly. 
+	 * Push these values to the screen
+	 * Add the api end point in main. 
+	 * */
+	 
 	totalWorked=0;
 })
 
@@ -133,7 +141,7 @@ async function getProjects() {
 		if (projects !== null) {
 			for (const project of projects) {
 				const listItem = document.createElement('li');
-				listItem.onclick = () => openProject(project.Name);
+				listItem.onclick = () => openProject(project);
 				listItem.textContent = project.Name;
 				projectList.appendChild(listItem);
 			}
@@ -143,6 +151,16 @@ async function getProjects() {
 	}
 }
 
-function openProject(name) {
-	console.log(`Clicked on: ${name}`)
+async function updateProjectDetails() {
+
+}
+
+function openProject(project) {
+	const projectName = document.getElementById('project-name-selected');
+	projectName.textContent = project.Name;
+	
+	const projectTime = document.getElementById('time-spent');
+	projectTime.textContent = project.TimeSpent;
+
+	console.log(`Clicked on: ${project.Name}`)
 }

@@ -47,8 +47,8 @@ func main() {
 
 	// Project functions
 	mux.HandleFunc("POST /api/createProject", apiCfg.handlerProjectCreate)
-	mux.HandleFunc("GET /api/getProjects", apiCfg.HandlerGetProjects)
-
+	mux.HandleFunc("GET /api/getProjects", apiCfg.handlerGetProjects)
+	mux.HandleFunc("POST /api/updateTime", apiCfg.handlerUpdateTime)
 	server := &http.Server{
 		Handler: mux,
 		Addr:    ":" + PORT,

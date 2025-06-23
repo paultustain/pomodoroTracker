@@ -21,3 +21,10 @@ SELECT * FROM projects;
 
 -- name: GetProject :one
 SELECT * FROM projects WHERE name = $1;
+
+-- name: UpdateTime :one
+UPDATE projects
+SET update_at = NOW(), 
+time_spent = $1
+WHERE name=$2
+RETURNING *;

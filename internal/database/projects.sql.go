@@ -10,15 +10,16 @@ import (
 )
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects(id, created_at, updated_at, name, completed)
+INSERT INTO projects(id, created_at, updated_at, name, completed, time_spent)
 VALUES (
 	gen_random_uuid(),
 	NOW(), 
 	NOW(), 
 	$1, 
-	false
+	false, 
+	0
 )
-RETURNING id, created_at, updated_at, name, completed
+RETURNING id, created_at, updated_at, name, completed, time_spent
 `
 
 func (q *Queries) CreateProject(ctx context.Context, name string) (Project, error) {
@@ -30,8 +31,18 @@ func (q *Queries) CreateProject(ctx context.Context, name string) (Project, erro
 		&i.UpdatedAt,
 		&i.Name,
 		&i.Completed,
+		&i.TimeSpent,
 	)
 	return i, err
+}
+
+const deleteProject = `-- name: DeleteProject :exec
+DELETE FROM projects WHERE name = $1
+`
+
+func (q *Queries) DeleteProject(ctx context.Context, name string) error {
+	_, err := q.db.ExecContext(ctx, deleteProject, name)
+	return err
 }
 
 const deleteProjects = `-- name: DeleteProjects :exec
@@ -44,7 +55,7 @@ func (q *Queries) DeleteProjects(ctx context.Context) error {
 }
 
 const getProject = `-- name: GetProject :one
-SELECT id, created_at, updated_at, name, completed FROM projects WHERE name = $1
+SELECT id, created_at, updated_at, name, completed, time_spent FROM projects WHERE name = $1
 `
 
 func (q *Queries) GetProject(ctx context.Context, name string) (Project, error) {
@@ -56,12 +67,13 @@ func (q *Queries) GetProject(ctx context.Context, name string) (Project, error) 
 		&i.UpdatedAt,
 		&i.Name,
 		&i.Completed,
+		&i.TimeSpent,
 	)
 	return i, err
 }
 
 const getProjects = `-- name: GetProjects :many
-SELECT id, created_at, updated_at, name, completed FROM projects
+SELECT id, created_at, updated_at, name, completed, time_spent FROM projects
 `
 
 func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
@@ -79,6 +91,7 @@ func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
 			&i.UpdatedAt,
 			&i.Name,
 			&i.Completed,
+			&i.TimeSpent,
 		); err != nil {
 			return nil, err
 		}
@@ -91,4 +104,31 @@ func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateTime = `-- name: UpdateTime :one
+UPDATE projects
+SET update_at = NOW(), 
+time_spent = $1
+WHERE name=$2
+RETURNING id, created_at, updated_at, name, completed, time_spent
+`
+
+type UpdateTimeParams struct {
+	TimeSpent int32
+	Name      string
+}
+
+func (q *Queries) UpdateTime(ctx context.Context, arg UpdateTimeParams) (Project, error) {
+	row := q.db.QueryRowContext(ctx, updateTime, arg.TimeSpent, arg.Name)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Completed,
+		&i.TimeSpent,
+	)
+	return i, err
 }
