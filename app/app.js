@@ -64,7 +64,7 @@ stopButton.addEventListener('click', function() {
 	isRunning = false;
 	time.textContent = "25:00"
 	stage.textContent = "Stopped"
-	console.log("You worked for " + formatTime(totalWorked) + " minutes")
+	console.log("You worked for " + formatTime(totalWorked) + " minutes" + totalWorked)
 	totalWorked=0;
 })
 
@@ -133,6 +133,7 @@ async function getProjects() {
 		if (projects !== null) {
 			for (const project of projects) {
 				const listItem = document.createElement('li');
+				listItem.onclick = () => openProject(project.Name);
 				listItem.textContent = project.Name;
 				projectList.appendChild(listItem);
 			}
@@ -140,4 +141,8 @@ async function getProjects() {
 	} catch (error) {
 		alert(`Error: ${error.message}`);
 	}
+}
+
+function openProject(name) {
+	console.log(`Clicked on: ${name}`)
 }
