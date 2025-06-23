@@ -129,11 +129,13 @@ async function getProjects() {
 		const projects = await res.json();
 		const projectList = document.getElementById('project-list')
 		projectList.innerHTML = '';
-		for (const project of projects) {
-			const listItem = document.createElement('li');
-			console.log(`proj: ${project}`);
-			listItem.textContent = project.Name;
-			projectList.appendChild(listItem);
+		
+		if (projects !== null) {
+			for (const project of projects) {
+				const listItem = document.createElement('li');
+				listItem.textContent = project.Name;
+				projectList.appendChild(listItem);
+			}
 		}
 	} catch (error) {
 		alert(`Error: ${error.message}`);
