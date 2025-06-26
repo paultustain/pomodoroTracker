@@ -183,7 +183,7 @@ async function getTasks() {
 		const res = await fetch(`api/getTasks/${selectedProject}`, {
 			method: 'GET', 
 		});
-
+		console.log(`getTasks: ${res.ok}`)
 		if (!res.ok) { 
 			const data = await res.json(); 
 			throw new Error(`Failed to get projects. Error: ${data.error}`)
@@ -198,16 +198,10 @@ async function getTasks() {
 			for (const task of tasks) {
 				const listItem = document.createElement('li');
 				// On click make it change to light grey
-				listItem.onclick = () => {
-					if (listItem.style.color !== "gray") {
-						apiLink = `api/completeTask/${task.ID}`
-						listItem.style.color = "gray";
-					} else {
-						apiLink = `api/completeTask/${task.ID}`
-						listItem.style.color = "black";
-					}
-					completeTask(apiLink)
+				if (task.Completed) {
+					listItem.style.color = "gray";
 				}
+				listItem.onclick = async () => await completeTask(listItem, task.ID);
 				listItem.textContent = task.Task;
 				taskList.appendChild(listItem);
 			}
@@ -217,10 +211,21 @@ async function getTasks() {
 	}
 }
 
-async function completeTask(taskID) {
-	try {
+async function completeTask(listItem, taskID) {
+	// can change this function based on how to display
+	// tasks. Hide all tasks on completion, set to grey and leave in session
+	// show all tasks for a project. 
 
-		const res = fetch(apiLink, {
+	if (listItem.style.color !== "gray") {
+		apiLink = `api/completeTask/${taskID}`
+		listItem.style.color = "gray";
+	} else {
+		apiLink = `api/completeTask/${taskID}`
+		listItem.style.color = "black";
+	}
+	console.log(`${apiLink}`)
+	try {
+		const res = await fetch(apiLink, {
 			method: 'POST'
 		});
 		if (!res.ok) { 

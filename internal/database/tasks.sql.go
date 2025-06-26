@@ -11,6 +11,28 @@ import (
 	"github.com/google/uuid"
 )
 
+const completeTask = `-- name: CompleteTask :one
+UPDATE tasks
+SET updated_at = NOW(),
+completed = true
+WHERE id = $1
+RETURNING id, created_at, updated_at, task, completed, project_id
+`
+
+func (q *Queries) CompleteTask(ctx context.Context, id uuid.UUID) (Task, error) {
+	row := q.db.QueryRowContext(ctx, completeTask, id)
+	var i Task
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Task,
+		&i.Completed,
+		&i.ProjectID,
+	)
+	return i, err
+}
+
 const createTask = `-- name: CreateTask :one
 INSERT INTO tasks(id, created_at, updated_at, task, completed, project_id)
 VALUES (

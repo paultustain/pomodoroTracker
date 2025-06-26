@@ -18,3 +18,10 @@ SELECT * FROM tasks WHERE completed IS false;
 
 -- name: GetAllTasks :many 
 SELECT * FROM tasks;
+
+-- name: CompleteTask :one
+UPDATE tasks
+SET updated_at = NOW(),
+completed = true
+WHERE id = $1
+RETURNING *;

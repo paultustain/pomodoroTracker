@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -82,6 +81,14 @@ func (cfg *apiConfig) handlerGetProjectTasks(w http.ResponseWriter, r *http.Requ
 		Valid: true,
 	})
 
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"failed to update task to complete: ",
+			err,
+		)
+	}
 	respondWithJSON(w, http.StatusOK, tasks)
 }
 
@@ -99,6 +106,16 @@ func (cfg *apiConfig) handlerCompleteTask(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	fmt.Println(taskID)
+	task, err := cfg.db.CompleteTask(r.Context(), taskID)
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"failed to update task to complete: ",
+			err,
+		)
+	}
+
+	respondWithJSON(w, http.StatusOK, task)
 
 }
