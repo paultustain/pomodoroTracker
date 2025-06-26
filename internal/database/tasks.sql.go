@@ -18,20 +18,19 @@ VALUES (
 	NOW(), 
 	NOW(), 
 	$1,
-	$2, 
-	$3
+	false, 
+	$2
 )
 RETURNING id, created_at, updated_at, task, completed, project_id
 `
 
 type CreateTaskParams struct {
 	Task      string
-	Completed bool
 	ProjectID uuid.NullUUID
 }
 
 func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error) {
-	row := q.db.QueryRowContext(ctx, createTask, arg.Task, arg.Completed, arg.ProjectID)
+	row := q.db.QueryRowContext(ctx, createTask, arg.Task, arg.ProjectID)
 	var i Task
 	err := row.Scan(
 		&i.ID,
@@ -113,45 +112,11 @@ func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
 }
 
 const getProjectTasks = `-- name: GetProjectTasks :many
-SELECT id, created_at, updated_at, task, completed, project_id FROM tasks
+SELECT id, created_at, updated_at, task, completed, project_id FROM tasks WHERE project_id = $1 ORDER BY created_at
 `
 
-func (q *Queries) GetProjectTasks(ctx context.Context) ([]Task, error) {
-	rows, err := q.db.QueryContext(ctx, getProjectTasks)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Task
-	for rows.Next() {
-		var i Task
-		if err := rows.Scan(
-			&i.ID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Task,
-			&i.Completed,
-			&i.ProjectID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getTasks = `-- name: GetTasks :many
-SELECT id, created_at, updated_at, task, completed, project_id FROM tasks WHERE project_id = $1
-`
-
-func (q *Queries) GetTasks(ctx context.Context, projectID uuid.NullUUID) ([]Task, error) {
-	rows, err := q.db.QueryContext(ctx, getTasks, projectID)
+func (q *Queries) GetProjectTasks(ctx context.Context, projectID uuid.NullUUID) ([]Task, error) {
+	rows, err := q.db.QueryContext(ctx, getProjectTasks, projectID)
 	if err != nil {
 		return nil, err
 	}

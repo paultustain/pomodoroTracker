@@ -73,9 +73,9 @@ func (cfg *apiConfig) handlerGetProjects(w http.ResponseWriter, r *http.Request)
 
 func (cfg *apiConfig) handlerUpdateTime(w http.ResponseWriter, r *http.Request) {
 	type Params struct {
-		Name string `json:"name"`
+		ID        uuid.UUID `json:"id"`
+		TimeAdded int32     `json:"time"`
 	}
-
 	decoder := json.NewDecoder(r.Body)
 	params := Params{}
 	err := decoder.Decode(&params)
@@ -88,8 +88,7 @@ func (cfg *apiConfig) handlerUpdateTime(w http.ResponseWriter, r *http.Request) 
 		)
 		return
 	}
-
-	project, err := cfg.db.GetProject(r.Context(), params.Name)
+	project, err := cfg.db.GetProject(r.Context(), params.ID)
 	if err != nil {
 		respondWithError(w,
 			http.StatusInternalServerError,
@@ -102,8 +101,8 @@ func (cfg *apiConfig) handlerUpdateTime(w http.ResponseWriter, r *http.Request) 
 	updatedProject, err := cfg.db.UpdateTime(
 		r.Context(),
 		database.UpdateTimeParams{
-			TimeSpent: project.TimeSpent + 1,
-			Name:      project.Name,
+			TimeSpent: project.TimeSpent + params.TimeAdded,
+			ID:        project.ID,
 		},
 	)
 
@@ -115,14 +114,7 @@ func (cfg *apiConfig) handlerUpdateTime(w http.ResponseWriter, r *http.Request) 
 	respondWithJSON(
 		w,
 		http.StatusOK,
-		Project{
-			ID:        project.ID,
-			UpdatedAt: project.UpdatedAt,
-			CreatedAt: project.CreatedAt,
-			Name:      project.Name,
-			Completed: project.Completed,
-			TimeSpent: updatedProject.TimeSpent,
-		},
+		updatedProject,
 	)
 
 }

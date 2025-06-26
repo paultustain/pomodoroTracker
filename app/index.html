@@ -5,12 +5,14 @@
   </head>
   <body>
    <h1>Welcome to TaskMaster!</h1>
+		<div id="timer-section">
 		<h2 id="stage">Stopped</h2>
 		<p id="time">25:00</p>
 		<p>Making sure you are working efficiently and staying on track.</p>
 		<button id="startButton">Start</button>
 		<button id="skipButton">Skip to Next</Button>
 		<button id="stopButton">Stop</button>
+		</div>
 		<h2>Create Project</h2>
 		<form id="create-project-form">
 			<input 
@@ -23,7 +25,17 @@
 		<h2>Project List</h2>
 		<ul id="project-list"></ul>
 		<h2>Project Details</h2>
-		<h3 id="project-name-selected"></p>
-		<p id="time-spent"></p>
+		<h3 id="project-name-selected"></h3>
+		<b>Time Spent: </b><p id="time-spent"></p>
+		<h2>To Do List</h2>
+		<ul id="open-tasks"></ul>
+		<form id="create-task-form">
+			<input
+				id="task-name"
+				placeholder="Task Details"
+				required
+			/>
+			<button type="submit">Create Task</button>
+		</form>
 	</body>
 </html>

@@ -47,13 +47,17 @@ func main() {
 
 	// Project functions
 	mux.HandleFunc("POST /api/createProject", apiCfg.handlerProjectCreate)
+	mux.HandleFunc("POST /api/createTask", apiCfg.handlerCreateTask)
 	mux.HandleFunc("GET /api/getProjects", apiCfg.handlerGetProjects)
 	mux.HandleFunc("POST /api/updateTime", apiCfg.handlerUpdateTime)
+	mux.HandleFunc("GET /api/getTasks/{projectID}", apiCfg.handlerGetProjectTasks)
+	mux.HandleFunc("POST /api/completeTask/{taskID}", apiCfg.handlerCompleteTask)
+
 	server := &http.Server{
 		Handler: mux,
 		Addr:    ":" + PORT,
 	}
-	fmt.Printf("File serving on port: localhost:8080")
+	fmt.Println("File serving on port: localhost:8080")
 
 	server.ListenAndServe()
 }

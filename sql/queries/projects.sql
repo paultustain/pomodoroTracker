@@ -17,14 +17,14 @@ DELETE FROM projects;
 DELETE FROM projects WHERE name = $1;
 
 -- name: GetProjects :many 
-SELECT * FROM projects; 
+SELECT * FROM projects ORDER BY created_at; 
 
 -- name: GetProject :one
-SELECT * FROM projects WHERE name = $1;
+SELECT * FROM projects WHERE id = $1;
 
 -- name: UpdateTime :one
 UPDATE projects
-SET update_at = NOW(), 
+SET updated_at = NOW(), 
 time_spent = $1
-WHERE name=$2
+WHERE id=$2
 RETURNING *;

@@ -5,16 +5,13 @@ VALUES (
 	NOW(), 
 	NOW(), 
 	$1,
-	$2, 
-	$3
+	false, 
+	$2
 )
 RETURNING *;
 
--- name: GetTasks :many
-SELECT * FROM tasks WHERE project_id = $1;
-
 -- name: GetProjectTasks :many
-SELECT * FROM tasks;
+SELECT * FROM tasks WHERE project_id = $1 ORDER BY created_at;
 
 -- name: GetAllOpen :many 
 SELECT * FROM tasks WHERE completed IS false;

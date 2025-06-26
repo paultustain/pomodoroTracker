@@ -7,6 +7,8 @@ package database
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createProject = `-- name: CreateProject :one
@@ -55,11 +57,11 @@ func (q *Queries) DeleteProjects(ctx context.Context) error {
 }
 
 const getProject = `-- name: GetProject :one
-SELECT id, created_at, updated_at, name, completed, time_spent FROM projects WHERE name = $1
+SELECT id, created_at, updated_at, name, completed, time_spent FROM projects WHERE id = $1
 `
 
-func (q *Queries) GetProject(ctx context.Context, name string) (Project, error) {
-	row := q.db.QueryRowContext(ctx, getProject, name)
+func (q *Queries) GetProject(ctx context.Context, id uuid.UUID) (Project, error) {
+	row := q.db.QueryRowContext(ctx, getProject, id)
 	var i Project
 	err := row.Scan(
 		&i.ID,
@@ -73,7 +75,7 @@ func (q *Queries) GetProject(ctx context.Context, name string) (Project, error) 
 }
 
 const getProjects = `-- name: GetProjects :many
-SELECT id, created_at, updated_at, name, completed, time_spent FROM projects
+SELECT id, created_at, updated_at, name, completed, time_spent FROM projects ORDER BY created_at
 `
 
 func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
@@ -108,19 +110,19 @@ func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
 
 const updateTime = `-- name: UpdateTime :one
 UPDATE projects
-SET update_at = NOW(), 
+SET updated_at = NOW(), 
 time_spent = $1
-WHERE name=$2
+WHERE id=$2
 RETURNING id, created_at, updated_at, name, completed, time_spent
 `
 
 type UpdateTimeParams struct {
 	TimeSpent int32
-	Name      string
+	ID        uuid.UUID
 }
 
 func (q *Queries) UpdateTime(ctx context.Context, arg UpdateTimeParams) (Project, error) {
-	row := q.db.QueryRowContext(ctx, updateTime, arg.TimeSpent, arg.Name)
+	row := q.db.QueryRowContext(ctx, updateTime, arg.TimeSpent, arg.ID)
 	var i Project
 	err := row.Scan(
 		&i.ID,
