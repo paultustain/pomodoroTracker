@@ -52,6 +52,8 @@ func main() {
 	mux.HandleFunc("POST /api/updateTime", apiCfg.handlerUpdateTime)
 	mux.HandleFunc("GET /api/getTasks/{projectID}", apiCfg.handlerGetProjectTasks)
 	mux.HandleFunc("POST /api/completeTask/{taskID}", apiCfg.handlerCompleteTask)
+	mux.HandleFunc("DELETE /api/deleteProject/{projectID}", apiCfg.handlerDeleteProject)
+	mux.HandleFunc("DELETE /api/deleteTask/{taskID}", apiCfg.handlerDeleteTask)
 
 	server := &http.Server{
 		Handler: mux,

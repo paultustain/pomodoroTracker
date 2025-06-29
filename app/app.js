@@ -16,13 +16,13 @@ let longBreak = 60 * 15;
 let totalWorked = 0;
 let isRunning = false;
 
+let currentTime = 0;
 
 window.onload = function() {
 	getProjects();
 	document.getElementById('timer-section').style.display ='none';
 }
 
-// Can we store project ID when selected?
 
 // FIX DELAY TO START BY 1 SECOND.
 // Initial code is delayed. 
@@ -34,6 +34,9 @@ startButton.addEventListener('click', function() {
 
 		timerId = setInterval(function() {
 			time.textContent = formatTime(duration);
+			document.getElementById('time-spent').textContent = formatTime(currentTime);
+			currentTime++;
+
 			duration--;
 			if (stage.textContent == "Work") {
 				totalWorked++;
@@ -70,7 +73,6 @@ stopButton.addEventListener('click', async function() {
 	time.textContent = "25:00"
 	stage.textContent = "Stopped"
 
-
 	await updateProjectTime(totalWorked);
 	 
 	totalWorked=0;
@@ -79,9 +81,11 @@ stopButton.addEventListener('click', async function() {
 function changeStage() {
 	if (stage.textContent == "Work") {
 		stage.textContent = "Break"
+		 $("body").css("background-color", yellow);
 		return shortBreak
 	} else {
 		stage.textContent = "Work"
+		 $("body").css("background-color", green);
 		return workDuration
 	}
 }
@@ -100,12 +104,15 @@ function formatTime(duration) {
 document.getElementById('create-project-form').addEventListener('submit', async (event) => {
 	event.preventDefault();
 	await createProject();
+	document.getElementById('create-project-form').reset();
 });
 
 document.getElementById('create-task-form').addEventListener('submit', async (event) => {
 	event.preventDefault();
 	await createTask();
-})
+	document.getElementById('create-task-form').reset();
+});
+
 
 async function createProject() {
 	const name = document.getElementById('project-name').value;
@@ -130,8 +137,6 @@ async function createProject() {
 
 async function createTask() {
 	const name = document.getElementById('task-name').value;
-	console.log(`Task: ${name}`)
-	console.log(`Within Project: ${selectedProject}`)
 	try {
 		const res = await fetch('api/createTask', {
 			method: 'POST', 
@@ -167,10 +172,26 @@ async function getProjects() {
 		
 		if (projects !== null) {
 			for (const project of projects) {
-				const listItem = document.createElement('li');
-				listItem.onclick = () => openProject(project);
-				listItem.textContent = project.Name;
-				projectList.appendChild(listItem);
+				
+				const projectLabel = document.createElement('b');
+				const deleteButton = document.createElement("b");
+				const pipeMarker = document.createElement("b");
+
+				projectLabel.onclick = () => openProject(project);
+				projectLabel.textContent = project.Name; 
+
+				deleteButton.textContent = "(Delete - should be picture of a bin)";
+				deleteButton.style.color = "red";
+				deleteButton.onclick = async () => await deleteProject(project);
+				
+				pipeMarker.textContent = " | ";
+				
+				projectList.appendChild(projectLabel);
+				projectList.appendChild(pipeMarker);
+				
+				projectList.appendChild(deleteButton);
+				projectList.appendChild(document.createElement("br"));
+
 			}
 		}
 	} catch (error) {
@@ -183,7 +204,6 @@ async function getTasks() {
 		const res = await fetch(`api/getTasks/${selectedProject}`, {
 			method: 'GET', 
 		});
-		console.log(`getTasks: ${res.ok}`)
 		if (!res.ok) { 
 			const data = await res.json(); 
 			throw new Error(`Failed to get projects. Error: ${data.error}`)
@@ -196,14 +216,36 @@ async function getTasks() {
 
 		if (tasks !== null) {
 			for (const task of tasks) {
-				const listItem = document.createElement('li');
-				// On click make it change to light grey
+				const label= document.createElement('label');
+				const description = document.createTextNode(task.Task);
+				const checkbox = document.createElement("input");
+				const deleteButton = document.createElement("b");
+				const pipeMarker = document.createElement("b");
+
 				if (task.Completed) {
-					listItem.style.color = "gray";
+					label.style.color = "gray";
+					label.style.setProperty("text-decoration", "line-through");
+					checkbox.checked = true;
 				}
-				listItem.onclick = async () => await completeTask(listItem, task.ID);
-				listItem.textContent = task.Task;
-				taskList.appendChild(listItem);
+				checkbox.type = "checkbox";
+				checkbox.name = "slct[]"
+				checkbox.value = task.Task;
+				
+				deleteButton.textContent = "(Delete - should be picture of a bin)";
+				deleteButton.style.color = "red";
+				deleteButton.onclick = async () => await deleteTask(task);
+				
+				pipeMarker.textContent = " | ";
+
+				checkbox.addEventListener('change', async (event) => { completeTask(checkbox, label, task.ID) })
+				
+				label.appendChild(checkbox);
+				label.appendChild(description);
+								
+				taskList.appendChild(label);
+				taskList.appendChild(pipeMarker);
+				taskList.appendChild(deleteButton);
+				taskList.appendChild(document.createElement("br"));
 			}
 		}
 	} catch (error) {
@@ -211,19 +253,20 @@ async function getTasks() {
 	}
 }
 
-async function completeTask(listItem, taskID) {
+async function completeTask(checkbox, label, taskID) {
 	// can change this function based on how to display
 	// tasks. Hide all tasks on completion, set to grey and leave in session
 	// show all tasks for a project. 
-
-	if (listItem.style.color !== "gray") {
+	
+	if (checkbox.checked) {
 		apiLink = `api/completeTask/${taskID}`
-		listItem.style.color = "gray";
+		label.style.color = "gray";
+		label.style.setProperty("text-decoration", "line-through");
 	} else {
 		apiLink = `api/completeTask/${taskID}`
-		listItem.style.color = "black";
+		label.style.color = "black";
+		label.style.setProperty("text-decoration", "none");
 	}
-	console.log(`${apiLink}`)
 	try {
 		const res = await fetch(apiLink, {
 			method: 'POST'
@@ -250,7 +293,7 @@ async function updateProjectTime(timeAdded) {
 			}),
 		});
 		if (!res.ok) {
-			const data = res.json();
+			const data = await res.json();
 			throw new Error(`Failed to update project time: ${data.error}`)
 		}
 		const project = await res.json();
@@ -271,7 +314,43 @@ async function openProject(project) {
 	projectName.textContent = project.Name;
 	
 	const projectTime = document.getElementById('time-spent');
+	currentTime = project.TimeSpent;
 	projectTime.textContent = formatTime(project.TimeSpent);
 	await getTasks();
 
+}
+
+async function deleteProject(project) {
+	try {
+		const res = await fetch( `api/deleteProject/${project.ID}`, {
+			method: "DELETE"
+		});
+
+		if (!res.ok) {
+			const data = await res.json();
+			throw new Error(`Failed to delete project ${data.error}`)
+		}
+	} catch (error) {
+		throw new Error(`Failed to delete project.`)
+	}
+
+	await getProjects();
+}
+
+
+async function deleteTask(task) {
+	try {
+		const res = await fetch( `api/deleteTask/${task.ID}`, {
+			method: "DELETE"
+		});
+
+		if (!res.ok) {
+			const data = await res.json();
+			throw new Error(`Failed to delete task: ${data.error}`)
+		}
+	} catch (error) {
+		throw new Error(`Failed to delete task.`)
+	}
+
+	await getTasks();
 }

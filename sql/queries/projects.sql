@@ -14,7 +14,7 @@ RETURNING *;
 DELETE FROM projects;
 
 -- name: DeleteProject :exec
-DELETE FROM projects WHERE name = $1;
+DELETE FROM projects WHERE id = $1;
 
 -- name: GetProjects :many 
 SELECT * FROM projects ORDER BY created_at; 

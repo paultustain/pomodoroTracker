@@ -22,6 +22,9 @@ SELECT * FROM tasks;
 -- name: CompleteTask :one
 UPDATE tasks
 SET updated_at = NOW(),
-completed = true
+completed = NOT completed 
 WHERE id = $1
 RETURNING *;
+
+-- name: DeleteTask :exec
+DELETE FROM tasks WHERE id=$1;

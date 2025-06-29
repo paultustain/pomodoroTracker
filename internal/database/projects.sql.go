@@ -39,11 +39,11 @@ func (q *Queries) CreateProject(ctx context.Context, name string) (Project, erro
 }
 
 const deleteProject = `-- name: DeleteProject :exec
-DELETE FROM projects WHERE name = $1
+DELETE FROM projects WHERE id = $1
 `
 
-func (q *Queries) DeleteProject(ctx context.Context, name string) error {
-	_, err := q.db.ExecContext(ctx, deleteProject, name)
+func (q *Queries) DeleteProject(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteProject, id)
 	return err
 }
 

@@ -34,20 +34,19 @@ This is going to be a pomodoro timer, ran in local host.
 ### v1
 Add todo list element and project name to timer 
 - ~Ensure the time worked~
-- Add to do list 
-- Add tick boxes to mark as complete 
-- Add colours to indicate work, break, long break and pause 
+- ~Add to do list~
+- ~Add tick boxes to mark as complete~
+- Add colours to indicate work, break, long break and pause ~
 
 ### v2
 Store project details in local database. 
-- Create DB using postgres 
-- Create DB functionality to get projects/details from DB 
-- Load details and show on screen
+- ~Create DB using postgres~
+- ~Create DB functionality to get projects/details from DB~
+- ~Load details and show on screen~
 - Overall project aims, session aims. 
 
 ### v3 
 Make it look better.
-- Add pause button
 - Make sure it looks clean and polished. 
 - Add user login ability 
 

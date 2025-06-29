@@ -58,6 +58,7 @@ func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Reques
 }
 
 func (cfg *apiConfig) handlerGetProjects(w http.ResponseWriter, r *http.Request) {
+	// Change this pathValue for the ID?
 	projects, err := cfg.db.GetProjects(r.Context())
 	if err != nil {
 		respondWithError(
@@ -116,5 +117,30 @@ func (cfg *apiConfig) handlerUpdateTime(w http.ResponseWriter, r *http.Request) 
 		http.StatusOK,
 		updatedProject,
 	)
+}
+
+func (cfg *apiConfig) handlerDeleteProject(w http.ResponseWriter, r *http.Request) {
+	projectIDString := r.PathValue("projectID")
+	projectID, err := uuid.Parse(projectIDString)
+
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"Invalid Project ID",
+			err,
+		)
+		return
+	}
+
+	err = cfg.db.DeleteProject(r.Context(), projectID)
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"Failed to delete project",
+			err,
+		)
+	}
 
 }

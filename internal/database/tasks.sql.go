@@ -14,7 +14,7 @@ import (
 const completeTask = `-- name: CompleteTask :one
 UPDATE tasks
 SET updated_at = NOW(),
-completed = true
+completed = NOT completed 
 WHERE id = $1
 RETURNING id, created_at, updated_at, task, completed, project_id
 `
@@ -63,6 +63,15 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, e
 		&i.ProjectID,
 	)
 	return i, err
+}
+
+const deleteTask = `-- name: DeleteTask :exec
+DELETE FROM tasks WHERE id=$1
+`
+
+func (q *Queries) DeleteTask(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteTask, id)
+	return err
 }
 
 const getAllOpen = `-- name: GetAllOpen :many

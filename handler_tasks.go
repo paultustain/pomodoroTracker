@@ -106,7 +106,7 @@ func (cfg *apiConfig) handlerCompleteTask(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	task, err := cfg.db.CompleteTask(r.Context(), taskID)
+	updatedTask, err := cfg.db.CompleteTask(r.Context(), taskID)
 	if err != nil {
 		respondWithError(
 			w,
@@ -116,6 +116,35 @@ func (cfg *apiConfig) handlerCompleteTask(w http.ResponseWriter, r *http.Request
 		)
 	}
 
-	respondWithJSON(w, http.StatusOK, task)
+	respondWithJSON(w, http.StatusOK, updatedTask)
+
+}
+
+func (cfg *apiConfig) handlerDeleteTask(w http.ResponseWriter, r *http.Request) {
+
+	taskIDString := r.PathValue("taskID")
+	taskID, err := uuid.Parse(taskIDString)
+
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"Invalid Task ID",
+			err,
+		)
+		return
+	}
+
+	err = cfg.db.DeleteTask(r.Context(), taskID)
+
+	if err != nil {
+		respondWithError(
+			w,
+			http.StatusInternalServerError,
+			"Failed to delete task",
+			err,
+		)
+		return
+	}
 
 }
