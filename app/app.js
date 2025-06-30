@@ -31,7 +31,7 @@ startButton.addEventListener('click', function() {
 		stage.textContent="Work"
 		isRunning = true;
 		duration = workDuration;
-
+		changeBorderColour('green');
 		timerId = setInterval(function() {
 			time.textContent = formatTime(duration);
 			document.getElementById('time-spent').textContent = formatTime(currentTime);
@@ -69,10 +69,11 @@ skipButton.addEventListener('click', function() {
 
 stopButton.addEventListener('click', async function() {
 	clearInterval(timerId);
+	changeBorderColour('red');
 	isRunning = false;
 	time.textContent = "25:00"
 	stage.textContent = "Stopped"
-
+	
 	await updateProjectTime(totalWorked);
 	 
 	totalWorked=0;
@@ -81,11 +82,11 @@ stopButton.addEventListener('click', async function() {
 function changeStage() {
 	if (stage.textContent == "Work") {
 		stage.textContent = "Break"
-		 $("body").css("background-color", yellow);
+		changeBorderColour('yellow');
 		return shortBreak
 	} else {
 		stage.textContent = "Work"
-		 $("body").css("background-color", green);
+		changeBorderColour('green');
 		return workDuration
 	}
 }
@@ -308,6 +309,17 @@ async function updateProjectTime(timeAdded) {
 }
 
 async function openProject(project) {
+	if (selectedProject !== "") {
+		// Move this to a function......
+		clearInterval(timerId);
+		isRunning = false;
+		time.textContent = "25:00"
+		stage.textContent = "Stopped"
+
+		await updateProjectTime(totalWorked);
+	 
+		totalWorked=0;
+	} 
 	document.getElementById('timer-section').style.display ='block';
 	selectedProject = project.ID;
 	const projectName = document.getElementById('project-name-selected');
@@ -353,4 +365,8 @@ async function deleteTask(task) {
 	}
 
 	await getTasks();
+}
+
+function changeBorderColour(colour) {
+	document.querySelector('html').style.border = `8px solid ${colour}`
 }
