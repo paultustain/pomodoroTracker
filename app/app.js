@@ -33,8 +33,8 @@ startButton.addEventListener('click', function() {
 		duration = workDuration;
 		changeBorderColour('green');
 		timerId = setInterval(function() {
-			time.textContent = formatTime(duration);
-			document.getElementById('time-spent').textContent = formatTime(currentTime);
+			time.textContent = formatTime(duration, false);
+			document.getElementById('time-spent').textContent = formatTime(currentTime, true);
 			currentTime++;
 
 			duration--;
@@ -55,7 +55,7 @@ skipButton.addEventListener('click', function() {
 
 	time.textContent = formatTime(duration);
 	timerId = setInterval(function() {
-		time.textContent = formatTime(duration);
+		time.textContent = formatTime(duration, false);
 		duration--;
 		if (stage.textContent == "Work") {
 			totalWorked++;
@@ -71,7 +71,7 @@ stopButton.addEventListener('click', async function() {
 	clearInterval(timerId);
 	changeBorderColour('red');
 	isRunning = false;
-	time.textContent = "25:00"
+	time.textContent = "25.00"
 	stage.textContent = "Stopped"
 	
 	await updateProjectTime(totalWorked);
@@ -94,12 +94,24 @@ function formatSeconds(value) {
 	return value < 10 ? "0" + value : value;
 }
 
-function formatTime(duration) {
+function formatTime(duration, hoursIncluded) {
+	var hours;
 	minutes = parseInt(duration / 60, 10);
+	if (hoursIncluded) {
+		hours = parseInt(minutes / 60, 10);
+		minutes = parseInt(minutes % 60, 10)
+	}
 	seconds = parseInt(duration % 60, 10);
+	hours = formatSeconds(hours);
 	minutes = formatSeconds(minutes);
 	seconds = formatSeconds(seconds);
-	return minutes + ":" + seconds;
+	returnTime = minutes + "." + seconds;
+	if (hoursIncluded) {
+		return hours + "." + returnTime;
+	}
+
+	return returnTime; 
+	
 }
 
 document.getElementById('create-project-form').addEventListener('submit', async (event) => {
@@ -327,7 +339,7 @@ async function openProject(project) {
 	
 	const projectTime = document.getElementById('time-spent');
 	currentTime = project.TimeSpent;
-	projectTime.textContent = formatTime(project.TimeSpent);
+	projectTime.textContent = formatTime(project.TimeSpent, true);
 	await getTasks();
 
 }
