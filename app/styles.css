@@ -1,3 +1,87 @@
+:root {
+    --bg-color: #1e1e1e;
+    --fg-color: #f5f5f5;
+    --subtle-color: #2e2e2e;
+    --primary-color: #bb86fc;
+    --input-bg: #2a2a2a;
+    --input-border: #444;
+    --button-bg: #7e57c2;
+    --button-hover: #5c4db1;
+}
+
 html {
-	border: 8px solid none;
+	background-color: var(--bg-color);
+	color: var(--fg-color);
+	padding: 0;
+}
+
+.sidebar { 
+	margin: 0;
+	padding: 0;
+	width: 300px;
+	background-color: var(--subtle-color);
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	overflow: auto;
+}
+
+.todo-outline {
+	border: 1px solid var(--primary-color);
+	border-radius: 15px;
+	background-color: var(--subtle-color);
+	display: flex;
+	justify-content: space-between;
+}
+
+.todo-item {
+	display: flex;
+	justify-content: left;
+	border: 1px solid pink;
+}
+
+.delete-button {
+	color: red;
+}
+.sidebar h1 {
+	color: var(--primary-color);
+}
+
+.mainpage {
+	margin-left: 310px;
+	margin-right: 25px;
+}
+
+.navbar { 
+	background-color: var(--bg-color);
+	display: flex; 
+	justify-content: space-between; 
+}
+
+.timer {
+	color: orange;
+}
+
+.nav-bar h1 {
+	color: var(--primary-color);
+	border: 1px solid green;
+}
+
+h1 {
+	color: var(--primary-color);
+}
+
+.subtitle {
+	color: var(--fg-color);
+}
+
+#project-information {
+	display: flex;
+	gap: 20px;
+}
+
+.section { 
+	border: 2px solid var(--primary-color);
+	padding: 5px;
 }

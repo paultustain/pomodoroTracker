@@ -7,38 +7,58 @@
 	<script src="app.js" defer></script>
   </head>
   <body >
-   <h1>Welcome to TaskMaster!</h1>
-		<div id="timer-section">
-		<h2 id="stage">Stopped</h2>
-		<p id="time">25.00</p>
-		<p>Making sure you are working efficiently and staying on track.</p>
+	<div class="sidebar">
+		<h1>TaskMaster</h1>
+
+	<div  id="timer-section">
 		<button id="startButton">Start</button>
 		<button id="skipButton">Skip to Next</Button>
 		<button id="stopButton">Stop</button>
+	</div>
+			<h2>Project Details</h2>
+			<h3 id="project-name-selected"></h3>
+			<b>Time Spent: </b><p id="time-spent"></p>
+		<p id="project-list"></p>
+		<p>Create Project Section Here</p>
+	</div>
+	<div class="mainpage">
+		<div class="navbar">
+		<span class="subtitle" id="stage">Stopped</span>
+		<span class="timer" id="time">25.00</span>
+		<span class="subtitle" id="light-dark">Light/Dark Mode</span>
 		</div>
-		<h2>Create Project</h2>
-		<form id="create-project-form">
-			<input 
-				id="project-name"
-				placeholder="Project Name"
-				required
-		/>
-			<button type="submit">Create Project</button>
-		</form>
-		<h2>Project List</h2>
-		<ul id="project-list"></ul>
-		<h2>Project Details</h2>
-		<h3 id="project-name-selected"></h3>
-		<b>Time Spent: </b><p id="time-spent"></p>
-		<h2>To Do List</h2>
-		<ul id="open-tasks"></ul>
-		<form id="create-task-form">
-			<input
-				id="task-name"
-				placeholder="Task Details"
-				required
+		<p>Tasks go here</p>
+			<ul id="open-tasks"></ul>
+	</div>
+
+
+		<!--
+	<div class="nav-bar">
+	</div>
+	<div id="project-information">
+		<div>
+			<h2>To Do List</h2>
+			<form id="create-task-form">
+				<input
+					id="task-name"
+					placeholder="Task Details"
+					required
+				/>
+				<button type="submit">Create Task</button>
+			</form>
+		</div>
+		<div>
+			<h2>Create Project</h2>
+			<form id="create-project-form">
+				<input 
+					id="project-name"
+					placeholder="Project Name"
+					required
 			/>
-			<button type="submit">Create Task</button>
-		</form>
-	</body>
+			<button type="submit">Create Project</button>
+			</form>
+			<h2>Project List</h2>
+		</div>
+</div> -->
+</body>
 </html>

@@ -15,7 +15,7 @@ let shortBreak = 60 * 5;
 let longBreak = 60 * 15;
 let totalWorked = 0;
 let isRunning = false;
-
+let darkMode = true;
 let currentTime = 0;
 
 window.onload = function() {
@@ -23,6 +23,20 @@ window.onload = function() {
 	document.getElementById('timer-section').style.display ='none';
 }
 
+document.getElementById("light-dark").onclick =  function () {
+	console.log(`Change background`)
+	htmlStyle = document.querySelector('html');
+	if (darkMode) {
+		htmlStyle.style.backgroundColor = `var(--fg-color)`;
+		htmlStyle.style.color = `var(--bg-color)`;
+	} else {
+		htmlStyle.style.backgroundColor = `var(--bg-color)`;
+		htmlStyle.style.color = `var(--fg-color)`;
+	}
+	darkMode = !darkMode;
+
+
+}
 
 // FIX DELAY TO START BY 1 SECOND.
 // Initial code is delayed. 
@@ -193,7 +207,7 @@ async function getProjects() {
 				projectLabel.onclick = () => openProject(project);
 				projectLabel.textContent = project.Name; 
 
-				deleteButton.textContent = "(Delete - should be picture of a bin)";
+				deleteButton.textContent = "D";
 				deleteButton.style.color = "red";
 				deleteButton.onclick = async () => await deleteProject(project);
 				
@@ -227,24 +241,48 @@ async function getTasks() {
 		var apiLink = ``;
 		taskList.innerHTML = '';
 
+		
 		if (tasks !== null) {
 			for (const task of tasks) {
-				const label= document.createElement('label');
-				const description = document.createTextNode(task.Task);
-				const checkbox = document.createElement("input");
-				const deleteButton = document.createElement("b");
-				const pipeMarker = document.createElement("b");
+				const todoBox = document.createElement('div');
+				todoBox.classList.add("todo-outline");
+				
+				const todoItem = document.createElement('div');
+				todoItem.classList.add("todo-item");
 
-				if (task.Completed) {
-					label.style.color = "gray";
-					label.style.setProperty("text-decoration", "line-through");
-					checkbox.checked = true;
-				}
+				const checkbox = document.createElement("input");
 				checkbox.type = "checkbox";
 				checkbox.name = "slct[]"
-				checkbox.value = task.Task;
 				
-				deleteButton.textContent = "(Delete - should be picture of a bin)";
+				const taskName = document.createTextNode(task.Task);
+				const deleteButton = document.createElement('button');
+				deleteButton.textContent = 'x';
+				deleteButton.classList.add('delete-button');
+				
+				const taskLabel = document.createElement('div');
+				taskLabel.textContent = task.Task;
+				
+				if (task.Completed) {
+					taskLabel.style.color = "gray";
+					taskLabel.style.setProperty("text-decoration", "line-through");
+					checkbox.checked = true;
+				}
+
+				todoItem.appendChild(checkbox);
+				todoItem.appendChild(taskLabel);
+
+				todoBox.appendChild(todoItem);
+				todoBox.appendChild(deleteButton);
+				
+
+
+				taskList.appendChild(todoBox);
+/*
+				const label= document.createElement('label');
+				const deleteButton = document.createElement("b");
+				const pipeMarker = document.createElement("b");
+				
+				deleteButton.textContent = "D";
 				deleteButton.style.color = "red";
 				deleteButton.onclick = async () => await deleteTask(task);
 				
@@ -259,6 +297,7 @@ async function getTasks() {
 				taskList.appendChild(pipeMarker);
 				taskList.appendChild(deleteButton);
 				taskList.appendChild(document.createElement("br"));
+*/
 			}
 		}
 	} catch (error) {
@@ -311,7 +350,7 @@ async function updateProjectTime(timeAdded) {
 		}
 		const project = await res.json();
 		const projectTime = document.getElementById('time-spent');
-		projectTime.textContent = formatTime(project.TimeSpent);
+		projectTime.textContent = formatTime(project.TimeSpent, true);
 		
 		await getProjects();
 	} catch (error) {
@@ -380,5 +419,5 @@ async function deleteTask(task) {
 }
 
 function changeBorderColour(colour) {
-	document.querySelector('html').style.border = `8px solid ${colour}`
+	document.querySelector('.navbar').style.border = `8px solid ${colour}`
 }
