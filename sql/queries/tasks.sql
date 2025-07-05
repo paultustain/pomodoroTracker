@@ -11,7 +11,7 @@ VALUES (
 RETURNING *;
 
 -- name: GetProjectTasks :many
-SELECT * FROM tasks WHERE project_id = $1 ORDER BY created_at;
+SELECT * FROM tasks WHERE project_id = $1 ORDER BY created_at, (completed is true) ASC;
 
 -- name: GetAllOpen :many 
 SELECT * FROM tasks WHERE completed IS false;

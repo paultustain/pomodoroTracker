@@ -16,7 +16,7 @@ UPDATE tasks
 SET updated_at = NOW(),
 completed = NOT completed 
 WHERE id = $1
-RETURNING id, created_at, updated_at, task, completed, project_id
+RETURNING id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit
 `
 
 func (q *Queries) CompleteTask(ctx context.Context, id uuid.UUID) (Task, error) {
@@ -29,6 +29,9 @@ func (q *Queries) CompleteTask(ctx context.Context, id uuid.UUID) (Task, error) 
 		&i.Task,
 		&i.Completed,
 		&i.ProjectID,
+		&i.Description,
+		&i.TimeLimitType,
+		&i.TimeLimit,
 	)
 	return i, err
 }
@@ -43,7 +46,7 @@ VALUES (
 	false, 
 	$2
 )
-RETURNING id, created_at, updated_at, task, completed, project_id
+RETURNING id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit
 `
 
 type CreateTaskParams struct {
@@ -61,6 +64,9 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, e
 		&i.Task,
 		&i.Completed,
 		&i.ProjectID,
+		&i.Description,
+		&i.TimeLimitType,
+		&i.TimeLimit,
 	)
 	return i, err
 }
@@ -75,7 +81,7 @@ func (q *Queries) DeleteTask(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAllOpen = `-- name: GetAllOpen :many
-SELECT id, created_at, updated_at, task, completed, project_id FROM tasks WHERE completed IS false
+SELECT id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit FROM tasks WHERE completed IS false
 `
 
 func (q *Queries) GetAllOpen(ctx context.Context) ([]Task, error) {
@@ -94,6 +100,9 @@ func (q *Queries) GetAllOpen(ctx context.Context) ([]Task, error) {
 			&i.Task,
 			&i.Completed,
 			&i.ProjectID,
+			&i.Description,
+			&i.TimeLimitType,
+			&i.TimeLimit,
 		); err != nil {
 			return nil, err
 		}
@@ -109,7 +118,7 @@ func (q *Queries) GetAllOpen(ctx context.Context) ([]Task, error) {
 }
 
 const getAllTasks = `-- name: GetAllTasks :many
-SELECT id, created_at, updated_at, task, completed, project_id FROM tasks
+SELECT id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit FROM tasks
 `
 
 func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
@@ -128,6 +137,9 @@ func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
 			&i.Task,
 			&i.Completed,
 			&i.ProjectID,
+			&i.Description,
+			&i.TimeLimitType,
+			&i.TimeLimit,
 		); err != nil {
 			return nil, err
 		}
@@ -143,7 +155,7 @@ func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
 }
 
 const getProjectTasks = `-- name: GetProjectTasks :many
-SELECT id, created_at, updated_at, task, completed, project_id FROM tasks WHERE project_id = $1 ORDER BY created_at
+SELECT id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit FROM tasks WHERE project_id = $1 ORDER BY created_at, (completed is true) ASC
 `
 
 func (q *Queries) GetProjectTasks(ctx context.Context, projectID uuid.NullUUID) ([]Task, error) {
@@ -162,6 +174,9 @@ func (q *Queries) GetProjectTasks(ctx context.Context, projectID uuid.NullUUID) 
 			&i.Task,
 			&i.Completed,
 			&i.ProjectID,
+			&i.Description,
+			&i.TimeLimitType,
+			&i.TimeLimit,
 		); err != nil {
 			return nil, err
 		}

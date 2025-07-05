@@ -164,6 +164,7 @@ async function createProject() {
 
 async function createTask() {
 	const name = document.getElementById('task-name').value;
+	console.log(`${name}`)
 	try {
 		const res = await fetch('api/createTask', {
 			method: 'POST', 
@@ -253,14 +254,17 @@ async function getTasks() {
 				const checkbox = document.createElement("input");
 				checkbox.type = "checkbox";
 				checkbox.name = "slct[]"
+				checkbox.addEventListener('change', async (event) => { completeTask(checkbox, label, task.ID) })
 				
 				const taskName = document.createTextNode(task.Task);
 				const deleteButton = document.createElement('button');
 				deleteButton.textContent = 'x';
-				deleteButton.classList.add('delete-button');
+				deleteButton.classList.add('subtle-button');
+				deleteButton.onclick = async () => await deleteTask(task);
 				
 				const taskLabel = document.createElement('div');
 				taskLabel.textContent = task.Task;
+				taskLabel.classList.add('task-label')
 				
 				if (task.Completed) {
 					taskLabel.style.color = "gray";
@@ -271,33 +275,11 @@ async function getTasks() {
 				todoItem.appendChild(checkbox);
 				todoItem.appendChild(taskLabel);
 
+				todoItem.appendChild(deleteButton);
 				todoBox.appendChild(todoItem);
-				todoBox.appendChild(deleteButton);
 				
-
 
 				taskList.appendChild(todoBox);
-/*
-				const label= document.createElement('label');
-				const deleteButton = document.createElement("b");
-				const pipeMarker = document.createElement("b");
-				
-				deleteButton.textContent = "D";
-				deleteButton.style.color = "red";
-				deleteButton.onclick = async () => await deleteTask(task);
-				
-				pipeMarker.textContent = " | ";
-
-				checkbox.addEventListener('change', async (event) => { completeTask(checkbox, label, task.ID) })
-				
-				label.appendChild(checkbox);
-				label.appendChild(description);
-								
-				taskList.appendChild(label);
-				taskList.appendChild(pipeMarker);
-				taskList.appendChild(deleteButton);
-				taskList.appendChild(document.createElement("br"));
-*/
 			}
 		}
 	} catch (error) {
@@ -419,5 +401,5 @@ async function deleteTask(task) {
 }
 
 function changeBorderColour(colour) {
-	document.querySelector('.navbar').style.border = `8px solid ${colour}`
+	document.querySelector('.navbar').style.border = `3px solid ${colour}`
 }

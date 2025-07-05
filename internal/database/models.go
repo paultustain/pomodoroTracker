@@ -5,10 +5,17 @@
 package database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type Label struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+	Label     string
+}
 
 type Project struct {
 	ID        uuid.UUID
@@ -20,10 +27,13 @@ type Project struct {
 }
 
 type Task struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Task      string
-	Completed bool
-	ProjectID uuid.NullUUID
+	ID            uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Task          string
+	Completed     bool
+	ProjectID     uuid.NullUUID
+	Description   sql.NullString
+	TimeLimitType sql.NullString
+	TimeLimit     sql.NullInt32
 }

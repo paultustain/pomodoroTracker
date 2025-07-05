@@ -2,6 +2,7 @@
     --bg-color: #1e1e1e;
     --fg-color: #f5f5f5;
     --subtle-color: #2e2e2e;
+    --hover-box: #5e5e5e;
     --primary-color: #bb86fc;
     --input-bg: #2a2a2a;
     --input-border: #444;
@@ -28,22 +29,25 @@ html {
 }
 
 .todo-outline {
-	border: 1px solid var(--primary-color);
 	border-radius: 15px;
 	background-color: var(--subtle-color);
 	display: flex;
 	justify-content: space-between;
+	padding: 10px 0px;
+	margin: 5px 0px;
 }
+
+.todo-outline:hover {
+	background-color: var(--hover-box);
+}
+
 
 .todo-item {
 	display: flex;
 	justify-content: left;
-	border: 1px solid pink;
+	padding: 0px 30px 0px 30px;
 }
 
-.delete-button {
-	color: red;
-}
 .sidebar h1 {
 	color: var(--primary-color);
 }
@@ -76,6 +80,14 @@ h1 {
 	color: var(--fg-color);
 }
 
+.task-label {
+	padding: 0px 25px;
+}
+
+#open-tasks {
+	padding: 0px 150px;
+}
+
 #project-information {
 	display: flex;
 	gap: 20px;
@@ -84,4 +96,18 @@ h1 {
 .section { 
 	border: 2px solid var(--primary-color);
 	padding: 5px;
+}
+
+.subtle-button {
+	border: none;
+	color: var(--subtle-color);
+	background-color: var(--suble-color);
+	padding: 0px 35px;
+
+}
+
+.todo-outline:hover button {
+	color: white;
+
+
 }
