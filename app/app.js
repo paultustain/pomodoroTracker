@@ -199,32 +199,23 @@ async function getProjects() {
 		
 		if (projects !== null) {
 			for (const project of projects) {
-				const projectButton = document.createElement("button");
-				projectButton.classList.add("project-button");
+				const projectButton = document.createElement("div");
+				projectButton.classList.add("unselected-project-button");
 
+				const projectName = document.createElement("b");
+				projectName.classList.add("unselected-project-label")
+				projectName.onclick = () => openProject(project, projectButton);
+				projectName.textContent = project.Name;
 
+				const deleteProject = document.createElement("button");
+				deleteProject.textContent = 'x';
+				deleteProject.classList.add('unselected-delete-button');
+				deleteProject.onclick = async () => deleteProject(project);
 
+				projectButton.appendChild(projectName);
+				projectButton.appendChild(deleteProject);
 
-
-
-				const projectLabel = document.createElement('b');
-				const deleteButton = document.createElement("b");
-				const pipeMarker = document.createElement("b");
-
-				projectLabel.onclick = () => openProject(project);
-				projectLabel.textContent = project.Name; 
-
-				deleteButton.textContent = "D";
-				deleteButton.style.color = "red";
-				deleteButton.onclick = async () => await deleteProject(project);
-				
-				pipeMarker.textContent = " | ";
-				
-				projectList.appendChild(projectLabel);
-				projectList.appendChild(pipeMarker);
-				
-				projectList.appendChild(deleteButton);
-				projectList.appendChild(document.createElement("br"));
+				projectList.appendChild(projectButton);
 
 			}
 		}
@@ -347,7 +338,7 @@ async function updateProjectTime(timeAdded) {
 
 }
 
-async function openProject(project) {
+async function openProject(project, projectButton) {
 	if (selectedProject !== "") {
 		// Move this to a function......
 		clearInterval(timerId);
@@ -360,9 +351,10 @@ async function openProject(project) {
 		totalWorked=0;
 	} 
 	document.getElementById('timer-section').style.display ='block';
+	
+	projectButton.classList.remove('unselected-project-button')
+	projectButton.classList.add('selected-project-button')
 	selectedProject = project.ID;
-	const projectName = document.getElementById('project-name-selected');
-	projectName.textContent = project.Name;
 	
 	const projectTime = document.getElementById('time-spent');
 	currentTime = project.TimeSpent;

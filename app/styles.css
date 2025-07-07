@@ -108,6 +108,29 @@ h1 {
 
 .todo-outline:hover button {
 	color: white;
+}
 
+.unselected-project-button {
+	border-radius: 15px;
+	background-color: var(--bg-color);
+	padding: 10px 10px;
+	margin: 5px 0px;
+}
+
+.unselected-delete-button {
+	border: none;
+	background-color: var(--bg-color);
+	color: var(--bg-color);
+}
+
+.unselected-project-button:hover button {
+	border: none;
+	background-color: var(--bg-color);
+	color: white;
 
 }
+
+.selected-project-button {
+	background-color: var(--primary-color);
+}
+
