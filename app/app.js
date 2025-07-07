@@ -164,7 +164,6 @@ async function createProject() {
 
 async function createTask() {
 	const name = document.getElementById('task-name').value;
-	console.log(`${name}`)
 	try {
 		const res = await fetch('api/createTask', {
 			method: 'POST', 
@@ -200,7 +199,14 @@ async function getProjects() {
 		
 		if (projects !== null) {
 			for (const project of projects) {
-				
+				const projectButton = document.createElement("button");
+				projectButton.classList.add("project-button");
+
+
+
+
+
+
 				const projectLabel = document.createElement('b');
 				const deleteButton = document.createElement("b");
 				const pipeMarker = document.createElement("b");
@@ -254,7 +260,6 @@ async function getTasks() {
 				const checkbox = document.createElement("input");
 				checkbox.type = "checkbox";
 				checkbox.name = "slct[]"
-				checkbox.addEventListener('change', async (event) => { completeTask(checkbox, label, task.ID) })
 				
 				const taskName = document.createTextNode(task.Task);
 				const deleteButton = document.createElement('button');
@@ -266,6 +271,7 @@ async function getTasks() {
 				taskLabel.textContent = task.Task;
 				taskLabel.classList.add('task-label')
 				
+				checkbox.addEventListener('change', async (event) => { completeTask(checkbox, taskLabel, task.ID) })
 				if (task.Completed) {
 					taskLabel.style.color = "gray";
 					taskLabel.style.setProperty("text-decoration", "line-through");

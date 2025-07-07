@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -16,7 +17,7 @@ UPDATE tasks
 SET updated_at = NOW(),
 completed = NOT completed 
 WHERE id = $1
-RETURNING id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit
+RETURNING id, created_at, updated_at, task, description, completed, project_id
 `
 
 func (q *Queries) CompleteTask(ctx context.Context, id uuid.UUID) (Task, error) {
@@ -27,46 +28,52 @@ func (q *Queries) CompleteTask(ctx context.Context, id uuid.UUID) (Task, error) 
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Task,
+		&i.Description,
 		&i.Completed,
 		&i.ProjectID,
-		&i.Description,
-		&i.TimeLimitType,
-		&i.TimeLimit,
 	)
 	return i, err
 }
 
 const createTask = `-- name: CreateTask :one
-INSERT INTO tasks(id, created_at, updated_at, task, completed, project_id)
+INSERT INTO tasks(
+	id, 
+	created_at, 
+	updated_at, 
+	task, 
+	description,
+	completed, 
+	project_id
+)
 VALUES (
 	gen_random_uuid(),
 	NOW(), 
 	NOW(), 
 	$1,
+	$2,
 	false, 
-	$2
+	$3
 )
-RETURNING id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit
+RETURNING id, created_at, updated_at, task, description, completed, project_id
 `
 
 type CreateTaskParams struct {
-	Task      string
-	ProjectID uuid.NullUUID
+	Task        string
+	Description sql.NullString
+	ProjectID   uuid.NullUUID
 }
 
 func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error) {
-	row := q.db.QueryRowContext(ctx, createTask, arg.Task, arg.ProjectID)
+	row := q.db.QueryRowContext(ctx, createTask, arg.Task, arg.Description, arg.ProjectID)
 	var i Task
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Task,
+		&i.Description,
 		&i.Completed,
 		&i.ProjectID,
-		&i.Description,
-		&i.TimeLimitType,
-		&i.TimeLimit,
 	)
 	return i, err
 }
@@ -81,7 +88,7 @@ func (q *Queries) DeleteTask(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAllOpen = `-- name: GetAllOpen :many
-SELECT id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit FROM tasks WHERE completed IS false
+SELECT id, created_at, updated_at, task, description, completed, project_id FROM tasks WHERE completed IS false
 `
 
 func (q *Queries) GetAllOpen(ctx context.Context) ([]Task, error) {
@@ -98,11 +105,9 @@ func (q *Queries) GetAllOpen(ctx context.Context) ([]Task, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Task,
+			&i.Description,
 			&i.Completed,
 			&i.ProjectID,
-			&i.Description,
-			&i.TimeLimitType,
-			&i.TimeLimit,
 		); err != nil {
 			return nil, err
 		}
@@ -118,7 +123,7 @@ func (q *Queries) GetAllOpen(ctx context.Context) ([]Task, error) {
 }
 
 const getAllTasks = `-- name: GetAllTasks :many
-SELECT id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit FROM tasks
+SELECT id, created_at, updated_at, task, description, completed, project_id FROM tasks
 `
 
 func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
@@ -135,11 +140,9 @@ func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Task,
+			&i.Description,
 			&i.Completed,
 			&i.ProjectID,
-			&i.Description,
-			&i.TimeLimitType,
-			&i.TimeLimit,
 		); err != nil {
 			return nil, err
 		}
@@ -155,7 +158,7 @@ func (q *Queries) GetAllTasks(ctx context.Context) ([]Task, error) {
 }
 
 const getProjectTasks = `-- name: GetProjectTasks :many
-SELECT id, created_at, updated_at, task, completed, project_id, description, time_limit_type, time_limit FROM tasks WHERE project_id = $1 ORDER BY created_at, (completed is true) ASC
+SELECT id, created_at, updated_at, task, description, completed, project_id FROM tasks WHERE project_id = $1 ORDER BY created_at, (completed is true) ASC
 `
 
 func (q *Queries) GetProjectTasks(ctx context.Context, projectID uuid.NullUUID) ([]Task, error) {
@@ -172,11 +175,9 @@ func (q *Queries) GetProjectTasks(ctx context.Context, projectID uuid.NullUUID) 
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Task,
+			&i.Description,
 			&i.Completed,
 			&i.ProjectID,
-			&i.Description,
-			&i.TimeLimitType,
-			&i.TimeLimit,
 		); err != nil {
 			return nil, err
 		}

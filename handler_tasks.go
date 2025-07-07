@@ -85,14 +85,19 @@ func (cfg *apiConfig) handlerGetProjectTasks(w http.ResponseWriter, r *http.Requ
 		respondWithError(
 			w,
 			http.StatusInternalServerError,
-			"failed to update task to complete: ",
+			"failed to get tasks: ",
 			err,
 		)
+		return
 	}
+
 	respondWithJSON(w, http.StatusOK, tasks)
 }
 
 func (cfg *apiConfig) handlerCompleteTask(w http.ResponseWriter, r *http.Request) {
+	// Add task description to this bit
+	// Add the description to the index/html and app.js files too
+
 	taskIDString := r.PathValue("taskID")
 	taskID, err := uuid.Parse(taskIDString)
 

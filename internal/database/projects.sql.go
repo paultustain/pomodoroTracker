@@ -12,28 +12,46 @@ import (
 )
 
 const createProject = `-- name: CreateProject :one
-INSERT INTO projects(id, created_at, updated_at, name, completed, time_spent)
+INSERT INTO projects(
+	id, 
+	created_at,
+	updated_at, 
+	name, 
+	time_spent, 
+	time_limit_type, 
+	time_limit, 
+	completed
+)
 VALUES (
 	gen_random_uuid(),
 	NOW(), 
 	NOW(), 
 	$1, 
-	false, 
-	0
+	0, 
+	$2,
+	0,
+	false
 )
-RETURNING id, created_at, updated_at, name, completed, time_spent
+RETURNING id, created_at, updated_at, name, time_spent, time_limit_type, time_limit, completed
 `
 
-func (q *Queries) CreateProject(ctx context.Context, name string) (Project, error) {
-	row := q.db.QueryRowContext(ctx, createProject, name)
+type CreateProjectParams struct {
+	Name          string
+	TimeLimitType string
+}
+
+func (q *Queries) CreateProject(ctx context.Context, arg CreateProjectParams) (Project, error) {
+	row := q.db.QueryRowContext(ctx, createProject, arg.Name, arg.TimeLimitType)
 	var i Project
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
-		&i.Completed,
 		&i.TimeSpent,
+		&i.TimeLimitType,
+		&i.TimeLimit,
+		&i.Completed,
 	)
 	return i, err
 }
@@ -57,7 +75,7 @@ func (q *Queries) DeleteProjects(ctx context.Context) error {
 }
 
 const getProject = `-- name: GetProject :one
-SELECT id, created_at, updated_at, name, completed, time_spent FROM projects WHERE id = $1
+SELECT id, created_at, updated_at, name, time_spent, time_limit_type, time_limit, completed FROM projects WHERE id = $1
 `
 
 func (q *Queries) GetProject(ctx context.Context, id uuid.UUID) (Project, error) {
@@ -68,14 +86,16 @@ func (q *Queries) GetProject(ctx context.Context, id uuid.UUID) (Project, error)
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
-		&i.Completed,
 		&i.TimeSpent,
+		&i.TimeLimitType,
+		&i.TimeLimit,
+		&i.Completed,
 	)
 	return i, err
 }
 
 const getProjects = `-- name: GetProjects :many
-SELECT id, created_at, updated_at, name, completed, time_spent FROM projects ORDER BY created_at
+SELECT id, created_at, updated_at, name, time_spent, time_limit_type, time_limit, completed FROM projects ORDER BY created_at
 `
 
 func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
@@ -92,8 +112,10 @@ func (q *Queries) GetProjects(ctx context.Context) ([]Project, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Name,
-			&i.Completed,
 			&i.TimeSpent,
+			&i.TimeLimitType,
+			&i.TimeLimit,
+			&i.Completed,
 		); err != nil {
 			return nil, err
 		}
@@ -113,7 +135,7 @@ UPDATE projects
 SET updated_at = NOW(), 
 time_spent = $1
 WHERE id=$2
-RETURNING id, created_at, updated_at, name, completed, time_spent
+RETURNING id, created_at, updated_at, name, time_spent, time_limit_type, time_limit, completed
 `
 
 type UpdateTimeParams struct {
@@ -129,8 +151,10 @@ func (q *Queries) UpdateTime(ctx context.Context, arg UpdateTimeParams) (Project
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
-		&i.Completed,
 		&i.TimeSpent,
+		&i.TimeLimitType,
+		&i.TimeLimit,
+		&i.Completed,
 	)
 	return i, err
 }

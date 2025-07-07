@@ -1,12 +1,23 @@
 -- name: CreateProject :one
-INSERT INTO projects(id, created_at, updated_at, name, completed, time_spent)
+INSERT INTO projects(
+	id, 
+	created_at,
+	updated_at, 
+	name, 
+	time_spent, 
+	time_limit_type, 
+	time_limit, 
+	completed
+)
 VALUES (
 	gen_random_uuid(),
 	NOW(), 
 	NOW(), 
 	$1, 
-	false, 
-	0
+	0, 
+	$2,
+	0,
+	false
 )
 RETURNING *;
 

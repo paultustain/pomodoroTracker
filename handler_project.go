@@ -10,12 +10,14 @@ import (
 )
 
 type Project struct {
-	ID        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Name      string    `json:"name"`
-	Completed bool      `json:"completed"`
-	TimeSpent int32     `json:"time_spent"`
+	ID            uuid.UUID `json:"id"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	Name          string    `json:"name"`
+	TimeSpent     int32     `json:"time_spent"`
+	TimeLimitType string    `json:"time_limit_type"`
+	TimeLimit     int32     `json:"time_limit"`
+	Completed     bool      `json:"completed"`
 }
 
 func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +38,11 @@ func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	project, err := cfg.db.CreateProject(r.Context(), params.Name)
+	project, err := cfg.db.CreateProject(r.Context(), database.CreateProjectParams{
+		Name:          params.Name,
+		TimeLimitType: "Tracking Only",
+	})
+
 	if err != nil {
 		respondWithError(
 			w,
@@ -46,12 +52,14 @@ func (cfg *apiConfig) handlerProjectCreate(w http.ResponseWriter, r *http.Reques
 		)
 		return
 	}
+
 	respondWithJSON(
 		w, http.StatusCreated, Project{
 			ID:        project.ID,
 			CreatedAt: project.CreatedAt,
 			UpdatedAt: project.UpdatedAt,
 			Name:      project.Name,
+			TimeSpent: project.TimeSpent,
 			Completed: project.Completed,
 		},
 	)

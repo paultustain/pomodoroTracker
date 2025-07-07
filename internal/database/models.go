@@ -18,22 +18,22 @@ type Label struct {
 }
 
 type Project struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Name      string
-	Completed bool
-	TimeSpent int32
-}
-
-type Task struct {
 	ID            uuid.UUID
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	Task          string
+	Name          string
+	TimeSpent     int32
+	TimeLimitType string
+	TimeLimit     int32
 	Completed     bool
-	ProjectID     uuid.NullUUID
-	Description   sql.NullString
-	TimeLimitType sql.NullString
-	TimeLimit     sql.NullInt32
+}
+
+type Task struct {
+	ID          uuid.UUID
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Task        string
+	Description sql.NullString
+	Completed   bool
+	ProjectID   uuid.NullUUID
 }
